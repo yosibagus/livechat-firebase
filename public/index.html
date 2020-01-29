@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Firebase Hosting</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/7.7.0/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/7.7.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.7.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/7.7.0/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/7.7.0/firebase-storage.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+
+</head>
+
+<body>
+
+
+  <form onsubmit="return sendMessage()">
+    <input type="text" id="message" placeholder="Enter Message" autocomplete="off">
+    <input type="submit">
+  </form>
+
+  <ul id="messages"></ul>
+
+  <script>
+    //jika menampilkan membutuhkan domcontentload
+    document.addEventListener('DOMContentLoaded', function () {
+      var db = firebase.database();
+      //listen for incomming message
+      firebase.database().ref("messages").on("child_added", function (snapshot) {
+        var html = "";
+        html += "<li>";
+        html += snapshot.val().sender + ": " + snapshot.val().message;
+        html += "</li>"
+        document.getElementById("messages").innerHTML += html;
+      });
+    });
+  </script>
+  <script>
+    var myName = prompt("Enter Your Name : ");
+
+    //add message to firebase database
+    function sendMessage() {
+      var message = document.getElementById("message").value;
+      firebase.database().ref("messages").push().set({
+        sender: myName,
+        message: message
+      });
+      return false;
+    }
+  </script>
+
+
+</body>
+
+</html>
